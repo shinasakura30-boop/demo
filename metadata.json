@@ -1,0 +1,5 @@
+{
+  "name": "Logi-Pro AI Feedback Loop",
+  "description": "AI-driven educational assessment platform for English for Logistics course.",
+  "requestFramePermissions": ["microphone"]
+}
