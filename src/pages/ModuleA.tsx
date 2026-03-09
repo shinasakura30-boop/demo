@@ -26,12 +26,14 @@ export default function ModuleA() {
       timerRef.current = window.setInterval(() => setTime((t) => t + 1), 1000);
       setLiveTranscript('');
       let index = 0;
-      transcriptTimerRef.current = window.setInterval(() => {
-        if (index < FAKE_TRANSCRIPT.length) {
-          setLiveTranscript(prev => prev + FAKE_TRANSCRIPT.charAt(index));
-          index++;
-        }
-      }, 120);
+      const words = FAKE_TRANSCRIPT.split(" ");
+
+transcriptTimerRef.current = window.setInterval(() => {
+  if (index < words.length) {
+    setLiveTranscript(prev => prev + words[index] + " ");
+    index++;
+  }
+}, 350); // tốc độ đọc
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
       if (transcriptTimerRef.current) clearInterval(transcriptTimerRef.current);

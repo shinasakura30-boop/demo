@@ -21,7 +21,21 @@ export default function AdminReview() {
     setLoading(true);
     try {
       const data = await dashboardService.getReviewQueue();
-      setQueue(data);
+      // Hardcoding Chu Hoang Minh Phuc for the demo
+      const demoItem: ReviewQueueItem = {
+        assessment_id: 999,
+        student_name: "Chu Hoang Minh Phuc",
+        student_code: "VAA2024007",
+        module: "A",
+        ai_score: 84.5,
+        proficiency_level: "B2+",
+        input_text: "EMERGENCY NOTIFICATION... SECTOR B OPERATIONS... WE HAVE A MAJOR CHEMICAL SPILL ON THE MAIN FLOOR... A WORKER HAS SUSTAINED A SEVERE LEG INJURY... DEPLOY FIRST AID KIT AND DISPATCH EMERGENCY SERVICES IMMEDIATELY.",
+        created_at: new Date().toISOString()
+      };
+      setQueue([demoItem, ...data]);
+      setSelectedItem(demoItem);
+      setNotes('');
+      setScore(84);
     } catch (err) {
       console.error(err);
     } finally {
@@ -160,59 +174,117 @@ export default function AdminReview() {
                     <p className="text-xs font-mono font-bold uppercase text-gray-500 tracking-[0.2em]">ID: <span className="text-tech-cyan">#{selectedItem.assessment_id}</span></p>
                   </div>
                   <div className="bg-black/50 p-4 rounded-2xl border border-white/5 text-left md:text-right">
-                    <p className="text-[10px] font-bold uppercase text-gray-500 tracking-[0.2em] mb-1">AI Baseline Score</p>
-                    <div className="flex items-baseline md:justify-end gap-1">
+                     <p className="text-[10px] font-bold uppercase text-gray-500 tracking-[0.2em] mb-1">AI Baseline Score</p>
+                     <div className="flex items-baseline md:justify-end gap-1">
                        <span className="text-4xl font-bold tracking-tighter text-tech-cyan">{selectedItem.ai_score}</span>
                        <span className="text-lg font-bold text-gray-500">%</span>
-                    </div>
+                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 relative">
-                  <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 flex items-center gap-2">
-                     <ClipboardCheck className="w-4 h-4 text-vaa-gold" /> Raw Submission Data
-                  </h4>
-                  <div className="p-6 rounded-3xl bg-black/60 border border-white/5 text-sm leading-relaxed font-mono text-gray-300 shadow-inner relative">
-                    <div className="absolute left-0 top-6 bottom-6 w-1 bg-white/10 rounded-r-md" />
-                    "{selectedItem.input_text}"
-                  </div>
-                </div>
+                {selectedItem.student_name === "Chu Hoang Minh Phuc" ? (
+                  <div className="space-y-6 pt-4">
+                     <div className="p-8 rounded-3xl bg-black/80 border border-tech-cyan/20 shadow-[0_0_30px_rgba(0,229,255,0.1)] relative overflow-hidden group">
+                       {/* Background glow */}
+                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-tech-cyan to-transparent opacity-50" />
+                       <div className="absolute -top-24 -right-24 w-64 h-64 bg-tech-cyan/5 rounded-full blur-[80px]" />
+                       
+                       {/* Header */}
+                       <div className="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
+                         <Activity className="w-5 h-5 text-tech-cyan animate-pulse" />
+                         <h4 className="text-sm font-bold tracking-[0.2em] text-tech-cyan">
+                           AI EVALUATION SYNC <span className="text-white/30 mx-2">|</span> <span className="text-white">STATUS: OPTIMAL</span>
+                         </h4>
+                       </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-white/10">
-                  <div className="space-y-6">
-                    <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 flex items-center gap-2">
-                       <Activity className="w-4 h-4 text-tech-cyan" /> Final Grade Adj.
-                    </h4>
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-6 bg-black/40 p-5 rounded-3xl border border-white/5">
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="100" 
-                          value={score}
-                          onChange={(e) => setScore(parseInt(e.target.value))}
-                          className="flex-1 h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-tech-cyan"
-                        />
-                        <span className="text-3xl font-mono font-bold text-white w-14 text-right">
-                          {score}<span className="text-sm text-gray-500">%</span>
-                        </span>
+                       {/* Candidate Info Grid */}
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
+                         <div className="space-y-1">
+                           <p className="text-[10px] text-gray-500 uppercase tracking-widest">Candidate</p>
+                           <p className="text-lg font-bold text-white tracking-wide">Chu Hoang Minh Phuc</p>
+                         </div>
+                         <div className="space-y-1">
+                           <p className="text-[10px] text-gray-500 uppercase tracking-widest">Transmission Sequence</p>
+                           <p className="text-lg font-mono text-gray-300 bg-white/5 px-3 py-1 rounded-lg inline-block border border-white/10">Alpha-Sector-B-92</p>
+                         </div>
+                       </div>
+
+                       {/* Analytics Section */}
+                       <div className="grid grid-cols-2 gap-4 mb-8">
+                         <div className="p-5 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 shadow-inner">
+                           <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                             <span className="w-1.5 h-1.5 rounded-full bg-tech-cyan" /> Linguistic Synthesis
+                           </p>
+                           <p className="text-3xl font-mono font-bold text-white">86.2<span className="text-lg text-gray-500 ml-1">%</span></p>
+                         </div>
+                         <div className="p-5 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 shadow-inner">
+                           <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                             <span className="w-1.5 h-1.5 rounded-full bg-tech-cyan opacity-60" /> Protocol Alignment
+                           </p>
+                           <p className="text-3xl font-mono font-bold text-gray-300">82.5<span className="text-lg text-gray-600 ml-1">%</span></p>
+                         </div>
+                       </div>
+
+                       {/* Advisory Block */}
+                       <div className="p-6 rounded-2xl bg-tech-cyan/5 border-l-4 border-tech-cyan relative z-10">
+                         <p className="text-[10px] uppercase font-bold text-tech-cyan tracking-[0.2em] mb-3 flex items-center gap-2">
+                           <ShieldCheck className="w-4 h-4" /> AI Advisory
+                         </p>
+                         <p className="text-sm text-gray-200 leading-relaxed font-medium">
+                           Candidate demonstrated exceptional situational awareness and rapid terminology deployment. Recommended for Final Authorization without remediation.
+                         </p>
+                       </div>
+                     </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-4 relative">
+                      <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 flex items-center gap-2">
+                        <ClipboardCheck className="w-4 h-4 text-vaa-gold" /> Raw Submission Data
+                      </h4>
+                      <div className="p-6 rounded-3xl bg-black/60 border border-white/5 text-sm leading-relaxed font-mono text-gray-300 shadow-inner relative">
+                        <div className="absolute left-0 top-6 bottom-6 w-1 bg-white/10 rounded-r-md" />
+                        "{selectedItem.input_text}"
                       </div>
-                      <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest text-center">Slide to finalize grade</p>
                     </div>
-                  </div>
 
-                  <div className="space-y-6">
-                    <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 flex items-center gap-2">
-                       <ShieldCheck className="w-4 h-4 text-vaa-gold" /> Instructor Notes
-                    </h4>
-                    <textarea 
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Input official feedback notation..."
-                      className="w-full h-[120px] p-5 rounded-3xl bg-black/40 border border-white/10 text-sm focus:ring-1 focus:ring-vaa-gold focus:border-vaa-gold resize-none font-mono text-gray-300 placeholder:text-gray-600 outline-none shadow-inner"
-                    />
-                  </div>
-                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-white/10">
+                      <div className="space-y-6">
+                        <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 flex items-center gap-2">
+                           <Activity className="w-4 h-4 text-tech-cyan" /> Final Grade Adj.
+                        </h4>
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-center gap-6 bg-black/40 p-5 rounded-3xl border border-white/5">
+                            <input 
+                              type="range" 
+                              min="0" 
+                              max="100" 
+                              value={score}
+                              onChange={(e) => setScore(parseInt(e.target.value))}
+                              className="flex-1 h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-tech-cyan"
+                            />
+                            <span className="text-3xl font-mono font-bold text-white w-14 text-right">
+                              {score}<span className="text-sm text-gray-500">%</span>
+                            </span>
+                          </div>
+                          <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest text-center">Slide to finalize grade</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-6">
+                        <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 flex items-center gap-2">
+                           <ShieldCheck className="w-4 h-4 text-vaa-gold" /> Instructor Notes
+                        </h4>
+                        <textarea 
+                          value={notes}
+                          onChange={(e) => setNotes(e.target.value)}
+                          placeholder="Input official feedback notation..."
+                          className="w-full h-[120px] p-5 rounded-3xl bg-black/40 border border-white/10 text-sm focus:ring-1 focus:ring-vaa-gold focus:border-vaa-gold resize-none font-mono text-gray-300 placeholder:text-gray-600 outline-none shadow-inner"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 mt-4">
                   <button
